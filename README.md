@@ -1,11 +1,3 @@
-Repository: https://github.com/sudolabs-io/sudo-app/blob/develop/buildspec.yml
-
-Learn: Static website hosting on S3 with AWS code pipelines : https://www.youtube.com/watch?v=zkNdHv1iMgY
-
-take help from this: https://sudolabs.io/blog/build-and-deploy-static-website-and-node-js-applications-using-CI-CD-pipline-at-aws
-repo : https://github.com/lucaschen/aws-codepipeline-demo
-
-
 Create AWS codepipeline for angular app and deploy via cloudfront:
 1) Take the github repository:https://github.com/awstechguide/angular-demo
 and watch video till ceation of S3 bucket.: https://www.youtube.com/watch?v=2VuULW1yNHE
