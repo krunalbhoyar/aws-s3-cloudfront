@@ -1,27 +1,95 @@
-# AngularLogin
+Repository: https://github.com/sudolabs-io/sudo-app/blob/develop/buildspec.yml
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.1.
+Learn: Static website hosting on S3 with AWS code pipelines : https://www.youtube.com/watch?v=zkNdHv1iMgY
 
-## Development server
+take help from this: https://sudolabs.io/blog/build-and-deploy-static-website-and-node-js-applications-using-CI-CD-pipline-at-aws
+repo : https://github.com/lucaschen/aws-codepipeline-demo
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## Code scaffolding
+Create AWS codepipeline for angular app and deploy via cloudfront:
+1) Take the github repository:https://github.com/awstechguide/angular-demo
+and watch video till ceation of S3 bucket.: https://www.youtube.com/watch?v=2VuULW1yNHE
+everything is at my own github : https://github.com/krunalbhoyar/aws-s3-cloudfront.git
+___________________
+buildspec.yaml
+version: 0.2
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+env:
+    variables:
+        CACHE_CONTROL: "86400"
+        S3_BUCKET: "{{s3_bucket_url}}"
+        BUILD_FOLDER: "dist"
+phases:
+  install:
+    runtime-versions:
+        nodejs: 14
+    commands:
+        - echo Installing source NPM dependencies...
+        - npm install
+        - npm install -g @angular/cli
+  build:
+    commands:
+        - echo Build started 
+        - ng build
+artifacts:
+    files:
+        - '**/*'
+    base-directory: 'dist*'
+    discard-paths: yes
+====================================================
+after this create distribution in aws cloudfront: and there is no need of domain
+watch video: https://www.youtube.com/watch?v=-DDGYzKtNwc&t=118s
+then search the url given in cloudfront. every time we have to create new distribution in cloudfront
+================ Done =================
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-## Running unit tests
+sample buildspec.yaml files
+___________________
+https://github.com/sudolabs-io/sudo-app/blob/develop/buildspec.yml
+version: 0.2
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+phases:
+  pre_build:
+    commands:
+      - cd client && npm install && cd ..
+      - cd server && npm install && cd ..
+  build:
+    commands:
+      - cd client && npm run build && cd ..
+  post_build:
+    commands:
+      - mv ./client/build ./build
+artifacts:
+  secondary-artifacts:
+    client:
+      files:
+        - '**/*'
+      base-directory: build
+    server:
+      files:
+        - '**/*'
+      base-directory: server
+_________________________
+https://apoorv.blog/deploy-reactjs-cloudfront-codepipeline-cdk/
+version: 0.2
 
-## Running end-to-end tests
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14.x
+    commands:
+      - echo Installing npm packages
+      - npm install
+      - npm update
+  build:
+    commands:
+      - echo Building react app
+      - npm run build
+      - echo Built react app on `date`
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+artifacts:
+  base-directory: ./build
+  files:
+    - '**/*'
+_______________________________
